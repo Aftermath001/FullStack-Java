@@ -1,0 +1,40 @@
+<mat-card class="converter-card">
+  <mat-card-header>
+    <mat-card-title>Excel to CSV Converter</mat-card-title>
+    <mat-card-subtitle>Convert Excel files to CSV format</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="file-upload-container">
+      <div class="file-input-wrapper">
+        <input type="file" 
+               #fileInput
+               (change)="onFileSelected($event)"
+               accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+               class="file-input"
+               id="excel-file-input">
+        <label for="excel-file-input" class="file-input-label">
+          <span *ngIf="!selectedFile">Choose Excel File (.xlsx)</span>
+          <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+        </label>
+      </div>
+      
+      <div class="file-info" *ngIf="selectedFile">
+        <p><strong>Selected File:</strong> {{ selectedFile.name }}</p>
+        <p><strong>Size:</strong> {{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+      </div>
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-raised-button 
+            color="primary" 
+            (click)="convertToCsv()" 
+            [disabled]="isLoading || !selectedFile"
+            class="convert-button">
+      <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isLoading">Convert to CSV</span>
+      <span *ngIf="isLoading">Converting...</span>
+    </button>
+  </mat-card-actions>
+</mat-card>

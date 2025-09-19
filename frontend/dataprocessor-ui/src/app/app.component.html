@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+  <span>{{ title }}</span>
+  <span class="spacer"></span>
+  <nav class="nav-links">
+    <a mat-button routerLink="/generator" routerLinkActive="active">
+      <mat-icon>add_circle</mat-icon>
+      Generator
+    </a>
+    <a mat-button routerLink="/converter" routerLinkActive="active">
+      <mat-icon>transform</mat-icon>
+      Converter
+    </a>
+    <a mat-button routerLink="/uploader" routerLinkActive="active">
+      <mat-icon>cloud_upload</mat-icon>
+      Uploader
+    </a>
+    <a mat-button routerLink="/report" routerLinkActive="active">
+      <mat-icon>assessment</mat-icon>
+      Reports
+    </a>
+  </nav>
+</mat-toolbar>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

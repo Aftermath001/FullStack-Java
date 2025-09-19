@@ -1,0 +1,50 @@
+<mat-card class="uploader-card">
+  <mat-card-header>
+    <mat-card-title>CSV Uploader</mat-card-title>
+    <mat-card-subtitle>Upload CSV files to import student data</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="file-upload-container">
+      <div class="file-input-wrapper">
+        <input type="file" 
+               #fileInput
+               (change)="onFileSelected($event)"
+               accept=".csv,text/csv"
+               class="file-input"
+               id="csv-file-input">
+        <label for="csv-file-input" class="file-input-label">
+          <span *ngIf="!selectedFile">Choose CSV File (.csv)</span>
+          <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+        </label>
+      </div>
+      
+      <div class="file-info" *ngIf="selectedFile">
+        <p><strong>Selected File:</strong> {{ selectedFile.name }}</p>
+        <p><strong>Size:</strong> {{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+        <p><strong>Type:</strong> {{ selectedFile.type || 'text/csv' }}</p>
+      </div>
+      
+      <div class="upload-info">
+        <h4>Upload Instructions:</h4>
+        <ul>
+          <li>CSV file should have headers: studentId, firstName, lastName, DOB, class, score</li>
+          <li>Date format should be yyyy-MM-dd</li>
+          <li>Score values will be adjusted during import</li>
+        </ul>
+      </div>
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-raised-button 
+            color="primary" 
+            (click)="uploadCsv()" 
+            [disabled]="isLoading || !selectedFile"
+            class="upload-button">
+      <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isLoading">Upload CSV</span>
+      <span *ngIf="isLoading">Uploading...</span>
+    </button>
+  </mat-card-actions>
+</mat-card>

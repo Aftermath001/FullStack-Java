@@ -1,0 +1,37 @@
+.generator-card {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.form-container {
+  padding: 20px 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.generate-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  position: relative;
+}
+
+.button-spinner {
+  margin-right: 8px;
+}
+
+mat-card-header {
+  text-align: center;
+}
+
+mat-card-title {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+mat-card-subtitle {
+  font-size: 14px;
+  color: #666;
+}

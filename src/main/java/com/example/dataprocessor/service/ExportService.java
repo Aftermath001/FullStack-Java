@@ -113,7 +113,8 @@ public class ExportService {
             PDPage page = new PDPage();
             document.addPage(page);
             
-            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            try {
                 contentStream.beginText();
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
                 contentStream.newLineAtOffset(50, 750);
@@ -149,6 +150,10 @@ public class ExportService {
                     contentStream.endText();
                     
                     yPosition -= 15;
+                }
+            } finally {
+                if (contentStream != null) {
+                    contentStream.close();
                 }
             }
             

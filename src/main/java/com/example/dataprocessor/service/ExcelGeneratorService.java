@@ -26,7 +26,7 @@ public class ExcelGeneratorService {
     private static final String[] CLASSES = {"Class1", "Class2", "Class3", "Class4", "Class5"};
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
-    @Value("${app.data.path:/tmp/data}")
+    @Value("${app.data.path}")
     private String baseDataPath;
 
     /**

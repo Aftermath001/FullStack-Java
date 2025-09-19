@@ -1,0 +1,138 @@
+<mat-card class="report-card">
+  <mat-card-header>
+    <mat-card-title>Student Reports</mat-card-title>
+    <mat-card-subtitle>View and export student data</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Student ID</mat-label>
+          <input matInput 
+                 [(ngModel)]="studentIdFilter" 
+                 placeholder="Enter student ID"
+                 type="number">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Class</mat-label>
+          <mat-select [(ngModel)]="clazzFilter">
+            <mat-option value="">All Classes</mat-option>
+            <mat-option *ngFor="let clazz of classes" [value]="clazz">
+              {{ clazz }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Search Name</mat-label>
+          <input matInput 
+                 [(ngModel)]="searchFilter" 
+                 placeholder="Search first or last name">
+        </mat-form-field>
+      </div>
+      
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="applyFilters()">
+          <mat-icon>search</mat-icon>
+          Apply Filters
+        </button>
+        <button mat-button (click)="clearFilters()">
+          <mat-icon>clear</mat-icon>
+          Clear Filters
+        </button>
+      </div>
+    </div>
+    
+    <!-- Export Section -->
+    <div class="export-section">
+      <h3>Export Data</h3>
+      <div class="export-buttons">
+        <button mat-raised-button 
+                color="accent" 
+                (click)="exportData('csv')" 
+                [disabled]="isExporting">
+          <mat-icon>file_download</mat-icon>
+          Export CSV
+        </button>
+        <button mat-raised-button 
+                color="accent" 
+                (click)="exportData('xlsx')" 
+                [disabled]="isExporting">
+          <mat-icon>file_download</mat-icon>
+          Export Excel
+        </button>
+        <button mat-raised-button 
+                color="accent" 
+                (click)="exportData('pdf')" 
+                [disabled]="isExporting">
+          <mat-icon>file_download</mat-icon>
+          Export PDF
+        </button>
+      </div>
+      <mat-spinner *ngIf="isExporting" diameter="30" class="export-spinner"></mat-spinner>
+    </div>
+    
+    <!-- Data Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Student Data</h3>
+        <span class="record-count">Total Records: {{ totalElements }}</span>
+      </div>
+      
+      <div class="table-container" *ngIf="!isLoading">
+        <table mat-table [dataSource]="students" class="students-table">
+          <ng-container matColumnDef="studentId">
+            <th mat-header-cell *matHeaderCellDef>Student ID</th>
+            <td mat-cell *matCellDef="let student">{{ student.studentId }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="firstName">
+            <th mat-header-cell *matHeaderCellDef>First Name</th>
+            <td mat-cell *matCellDef="let student">{{ student.firstName }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="lastName">
+            <th mat-header-cell *matHeaderCellDef>Last Name</th>
+            <td mat-cell *matCellDef="let student">{{ student.lastName }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="dob">
+            <th mat-header-cell *matHeaderCellDef>Date of Birth</th>
+            <td mat-cell *matCellDef="let student">{{ student.dob }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="clazz">
+            <th mat-header-cell *matHeaderCellDef>Class</th>
+            <td mat-cell *matCellDef="let student">{{ student.clazz }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="score">
+            <th mat-header-cell *matHeaderCellDef>Score</th>
+            <td mat-cell *matCellDef="let student">{{ student.score }}</td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      
+      <div class="loading-container" *ngIf="isLoading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading students...</p>
+      </div>
+      
+      <!-- Pagination -->
+      <mat-paginator 
+        [length]="totalElements"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="pageIndex"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>

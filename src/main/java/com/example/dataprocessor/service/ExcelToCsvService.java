@@ -1,6 +1,7 @@
 package com.example.dataprocessor.service;
 
 import com.monitorjbl.xlsx.StreamingReader;
+import org.apache.poi.ss.usermodel.Workbook;
 import com.opencsv.CSVWriter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -56,17 +57,18 @@ public class ExcelToCsvService {
             
             // Process Excel file and convert to CSV
             try (InputStream inputStream = Files.newInputStream(tempFile);
-                 StreamingReader reader = StreamingReader.builder()
+                 CSVWriter csvWriter = new CSVWriter(new FileWriter(csvPath.toFile()))) {
+                
+                Workbook workbook = StreamingReader.builder()
                          .rowCacheSize(100)
                          .bufferSize(4096)
                          .open(inputStream);
-                 CSVWriter csvWriter = new CSVWriter(new FileWriter(csvPath.toFile()))) {
                 
                 // Write CSV header
                 csvWriter.writeNext(new String[]{"studentId", "firstName", "lastName", "DOB", "class", "score"});
                 
                 boolean isFirstRow = true;
-                for (Row row : reader) {
+                for (Row row : workbook.getSheetAt(0)) {
                     // Skip header row
                     if (isFirstRow) {
                         isFirstRow = false;
@@ -81,6 +83,7 @@ public class ExcelToCsvService {
                 }
                 
                 csvWriter.flush();
+                workbook.close();
                 logger.info("Successfully converted Excel to CSV: {}", csvPath.toAbsolutePath());
                 return csvPath.toAbsolutePath();
             }

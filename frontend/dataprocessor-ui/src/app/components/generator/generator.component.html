@@ -1,0 +1,33 @@
+<mat-card class="generator-card">
+  <mat-card-header>
+    <mat-card-title>Excel Generator</mat-card-title>
+    <mat-card-subtitle>Generate Excel files with student data</mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Number of Records</mat-label>
+        <input matInput 
+               type="number" 
+               [(ngModel)]="count" 
+               placeholder="Enter number of records to generate"
+               min="1"
+               max="100000">
+        <mat-hint>Enter the number of student records to generate (1-100,000)</mat-hint>
+      </mat-form-field>
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-raised-button 
+            color="primary" 
+            (click)="generateExcel()" 
+            [disabled]="isLoading"
+            class="generate-button">
+      <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+      <span *ngIf="!isLoading">Generate Excel</span>
+      <span *ngIf="isLoading">Generating...</span>
+    </button>
+  </mat-card-actions>
+</mat-card>

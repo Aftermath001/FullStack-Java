@@ -22,7 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.criteria.Predicate;
+import javax.persistence.criteria.Predicate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -246,7 +246,8 @@ public class ReportController {
             PDPage page = new PDPage();
             document.addPage(page);
             
-            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            try {
                 // Title
                 contentStream.beginText();
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 16);
@@ -296,6 +297,10 @@ public class ReportController {
                     
                     yPosition -= 15;
                     currentRecord++;
+                }
+            } finally {
+                if (contentStream != null) {
+                    contentStream.close();
                 }
             }
             

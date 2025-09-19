@@ -59,7 +59,7 @@ public class DataController {
             response.put("downloadLink", "/api/download/" + fileName);
             
             return ResponseEntity.ok(response);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error converting Excel to CSV", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -76,7 +76,7 @@ public class DataController {
             response.put("recordsProcessed", "Data imported to database");
             
             return ResponseEntity.ok(response);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error uploading CSV file", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -85,15 +85,16 @@ public class DataController {
     @GetMapping("/students")
     public ResponseEntity<Page<Student>> getStudents(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) Long studentId,
-            @RequestParam(required = false) String clazz) {
+            @RequestParam(required = false) String clazz,
+            @RequestParam(required = false) String search) {
         
-        log.info("Fetching students - page: {}, size: {}, studentId: {}, clazz: {}", 
-                page, size, studentId, clazz);
+        log.info("Fetching students - page: {}, size: {}, studentId: {}, clazz: {}, search: {}", 
+                page, size, studentId, clazz, search);
         
         Pageable pageable = PageRequest.of(page, size);
-        Page<Student> students = dataProcessingService.getStudents(studentId, clazz, pageable);
+        Page<Student> students = dataProcessingService.getStudents(studentId, clazz, search, pageable);
         
         return ResponseEntity.ok(students);
     }
@@ -104,13 +105,14 @@ public class DataController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "100") int size,
             @RequestParam(required = false) Long studentId,
-            @RequestParam(required = false) String clazz) {
+            @RequestParam(required = false) String clazz,
+            @RequestParam(required = false) String search) {
         
         try {
-            log.info("Exporting students - format: {}, page: {}, size: {}, studentId: {}, clazz: {}", 
-                    format, page, size, studentId, clazz);
+            log.info("Exporting students - format: {}, page: {}, size: {}, studentId: {}, clazz: {}, search: {}", 
+                    format, page, size, studentId, clazz, search);
             
-            List<Student> students = dataProcessingService.getAllStudentsForExport(studentId, clazz);
+            List<Student> students = dataProcessingService.getAllStudentsForExport(studentId, clazz, search);
             
             String filePath;
             switch (format.toLowerCase()) {
@@ -145,7 +147,8 @@ public class DataController {
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName) {
         try {
-            Path filePath = Paths.get(System.getProperty("java.io.tmpdir"), "data", fileName);
+            // Use the configured data path instead of temp directory
+            Path filePath = Paths.get(System.getProperty("user.home"), "var", "log", "applications", "API", "dataprocessing", fileName);
             if (!filePath.toFile().exists()) {
                 return ResponseEntity.notFound().build();
             }
